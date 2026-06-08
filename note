@@ -1,0 +1,6 @@
+update 
+1. pada func tambahResep gw kasih looping
+2. menambahkan func baru tampilDaftarJudul untuk sorting
+3. pada func editResep gw nambahin biar bisa edit si resep dan bahan, serta kalau gak mau di ubah bisa "." atau "space"
+4. pada func hapusResep kalau input 0 langsung return ke menu utama dan ada resep yang kesorting
+5. mengblok func cariResepMenua tau komentar func seq dan bin 

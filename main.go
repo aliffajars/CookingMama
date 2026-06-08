@@ -1,7 +1,8 @@
 package main
+
 import (
-	"fmt"
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -10,22 +11,22 @@ const MAX_RESEP = 100
 const MAX_BAHAN = 100
 
 type Resep struct {
-	Judul string //done
-	Kategori string // done
-	BahanUtama string // done
-	Bahan [MAX_BAHAN]string // done
-	JumlahBahan int //done
-	Langkah string // done
-	Durasi int // done
-	JumlahDicari int // done
+	Judul        string            //done
+	Kategori     string            // done
+	BahanUtama   string            // done
+	Bahan        [MAX_BAHAN]string // done
+	JumlahBahan  int               //done
+	Langkah      string            // done
+	Durasi       int               // done
+	JumlahDicari int               // done
 }
 
 type DataResep struct {
-	Resep [MAX_RESEP]Resep
+	Resep       [MAX_RESEP]Resep
 	JumlahResep int
 }
 
-// Variabel Global 
+// Variabel Global
 var daftarResep DataResep
 var reader = bufio.NewReader(os.Stdin)
 
@@ -66,7 +67,7 @@ func main() {
 	}
 }
 
-// INPUT 
+// INPUT
 func inputString(prompt string) string { //buat nerima input string yang bisa pake spasi
 	var teks string
 
@@ -105,7 +106,11 @@ func menu() int {
 func tambahResep() {
 	var r Resep
 	var i int
-	
+	var step int = 1
+	var inputLangkah, inputDurasi string
+	var d int
+	var langkahStr string
+
 	fmt.Println()
 	fmt.Println("========================================")
 	fmt.Println("         ➕ TAMBAH RESEP")
@@ -128,13 +133,37 @@ func tambahResep() {
 	for i = 0; i < r.JumlahBahan; i++ {
 		r.Bahan[i] = inputString(fmt.Sprintf("Bahan %d: ", i+1))
 	}
-	
-	r.Langkah = inputString("Langkah Memasak: ")
 
-	fmt.Print("Durasi Memasak (menit): ")
-	fmt.Scan(&r.Durasi)
+	// kalau gak "." program tetep jalan, jadi berhentiin make "."
+	fmt.Println("Langkah Memasak (Ketik . pada langkah untuk selesai):")
+	r.Durasi = 0
 
-	reader.ReadString('\n')
+	// While loop di langkah masak nya dan durasi nya
+	inputLangkah = inputString(fmt.Sprintf("Langkah %d: ", step))
+	for inputLangkah != "." {
+
+		inputDurasi = inputString(fmt.Sprintf("Durasi langkah %d (menit, enter/. jika lewati): ", step))
+
+		var barisLangkah string
+		if inputDurasi == "" || inputDurasi == "." {
+			barisLangkah = fmt.Sprintf("%d. %s", step, inputLangkah)
+		} else {
+			d = 0
+			fmt.Sscanf(inputDurasi, "%d", &d)
+			r.Durasi += d
+			barisLangkah = fmt.Sprintf("%d. %s (%d menit)", step, inputLangkah, d)
+		}
+
+		if step == 1 {
+			langkahStr = barisLangkah
+		} else {
+			langkahStr += "\n              " + barisLangkah
+		}
+
+		step++
+		inputLangkah = inputString(fmt.Sprintf("Langkah %d: ", step))
+	}
+	r.Langkah = langkahStr
 
 	daftarResep.Resep[daftarResep.JumlahResep] = r
 	daftarResep.JumlahResep++
@@ -174,7 +203,7 @@ func tampilResep() {
 		}
 
 		fmt.Println()
-		fmt.Println("👨‍🍳  Langkah :", daftarResep.Resep[i].Langkah)
+		fmt.Println("👨🍳  Langkah :", daftarResep.Resep[i].Langkah)
 		fmt.Println("⏱️  Durasi  :", daftarResep.Resep[i].Durasi, "menit")
 	}
 
@@ -184,9 +213,40 @@ func tampilResep() {
 	fmt.Println("========================================")
 }
 
+// TAMPILKAN JUDUL SAJA (Fungsi Bantuan)
+func tampilDaftarJudul() {
+	var i int
+	if daftarResep.JumlahResep > 0 {
+
+		//Sorting dari A-Z
+		selectionSortJudul(true)
+
+		fmt.Println("📋 Daftar Judul Resep Tersedia:")
+		for i = 0; i < daftarResep.JumlahResep; i++ {
+			fmt.Printf("   %d. %s\n", i+1, daftarResep.Resep[i].Judul)
+		}
+		fmt.Println("========================================")
+	} else {
+		fmt.Println("📭 Belum ada resep yang tersimpan.")
+		fmt.Println("========================================")
+	}
+}
+
 func editResep() {
 	var judul string
-	var idx int
+	var idx, i int
+	var temp string
+
+	fmt.Println()
+	fmt.Println("========================================")
+	fmt.Println("         ✏️  EDIT RESEP")
+	fmt.Println("========================================")
+
+	tampilDaftarJudul()
+
+	if daftarResep.JumlahResep == 0 {
+		return // Jika kosong, langsung kembali ke menu utama
+	}
 
 	judul = inputString("Masukkan judul resep yang ingin diedit: ")
 
@@ -197,18 +257,91 @@ func editResep() {
 		return
 	}
 
-	fmt.Println("\n===== EDIT RESEP =====")
+	//penambahan fitur, edit nama resep, kategori, Pokonya semuanya dah, kalau mau skip make "." atau "enter" aja
+	fmt.Println("\n===== MENGEDIT RESEP =====")
+	fmt.Println("Petunjuk: Ketik . atau biarkan kosong (Enter) jika tidak ingin mengubah.")
 
-	daftarResep.Resep[idx].Judul = inputString("Judul Baru: ")
-	daftarResep.Resep[idx].Kategori = inputString("Kategori Baru: ")
-	daftarResep.Resep[idx].BahanUtama = inputString("Bahan Utama Baru: ")
+	temp = inputString(fmt.Sprintf("Judul Baru [%s]: ", daftarResep.Resep[idx].Judul))
+	if temp != "." && temp != "" {
+		daftarResep.Resep[idx].Judul = temp
+	}
 
-	fmt.Println("✏️ Resep berhasil diubah!")
+	temp = inputString(fmt.Sprintf("Kategori Baru [%s]: ", daftarResep.Resep[idx].Kategori))
+	if temp != "." && temp != "" {
+		daftarResep.Resep[idx].Kategori = temp
+	}
+
+	temp = inputString(fmt.Sprintf("Bahan Utama Baru [%s]: ", daftarResep.Resep[idx].BahanUtama))
+	if temp != "." && temp != "" {
+		daftarResep.Resep[idx].BahanUtama = temp
+	}
+
+	temp = inputString(fmt.Sprintf("Jumlah Bahan Baru [%d]: ", daftarResep.Resep[idx].JumlahBahan))
+	if temp != "." && temp != "" {
+		var jum int
+		fmt.Sscanf(temp, "%d", &jum)
+		if jum > 0 {
+			daftarResep.Resep[idx].JumlahBahan = jum
+			for i = 0; i < jum; i++ {
+				daftarResep.Resep[idx].Bahan[i] = inputString(fmt.Sprintf("Bahan %d: ", i+1))
+			}
+		}
+	}
+
+	fmt.Println("\nLangkah Memasak Baru (Ketik . pada Langkah 1 jika tidak ingin mengubah, atau . untuk selesai):")
+	var step int = 1
+	var inputLangkah, inputDurasi string
+	var d, durasiBaru int
+	var langkahStr string
+
+	//nah ini kondisi perulangan buat langkah resep nya
+	inputLangkah = inputString(fmt.Sprintf("Langkah %d: ", step))
+	for inputLangkah != "." && !(step == 1 && inputLangkah == "") {
+
+		inputDurasi = inputString(fmt.Sprintf("Durasi langkah %d (menit, enter/. jika lewati): ", step))
+
+		var barisLangkah string
+		if inputDurasi == "" || inputDurasi == "." {
+			barisLangkah = fmt.Sprintf("%d. %s", step, inputLangkah)
+		} else {
+			d = 0
+			fmt.Sscanf(inputDurasi, "%d", &d)
+			durasiBaru += d
+			barisLangkah = fmt.Sprintf("%d. %s (%d menit)", step, inputLangkah, d)
+		}
+
+		if step == 1 {
+			langkahStr = barisLangkah
+		} else {
+			langkahStr += "\n              " + barisLangkah
+		}
+
+		step++
+		inputLangkah = inputString(fmt.Sprintf("Langkah %d: ", step))
+	}
+
+	if step > 1 { // kalau ada langkah baru bakal nimpa langkah lama
+		daftarResep.Resep[idx].Langkah = langkahStr
+		daftarResep.Resep[idx].Durasi = durasiBaru
+	}
+
+	fmt.Println("✅ Resep berhasil diubah!")
 }
 
 func hapusResep() {
 	var judul string
 	var idx, i int
+
+	fmt.Println()
+	fmt.Println("========================================")
+	fmt.Println("         🗑️  HAPUS RESEP")
+	fmt.Println("========================================")
+
+	tampilDaftarJudul()
+
+	if daftarResep.JumlahResep == 0 {
+		return // kalau kosong kembali ke menu utama
+	}
 
 	judul = inputString("Masukkan judul resep yang ingin dihapus: ")
 	idx = cariResepSequential(judul)
@@ -223,19 +356,51 @@ func hapusResep() {
 	}
 
 	daftarResep.JumlahResep-- //untuk ngurangin jumlah resep setelah dihapus
-	fmt.Println("Resep berhasil dihapus!")
+	fmt.Println("✅ Resep berhasil dihapus!")
 }
+
 // END CRUD RESEP
 
-// MENU SEARCHING START
-
+// MENU SEARCHING START TANPA BIN DAN SEQ
 func cariResepMenu() {
-	var pilihan int
-
+	var judul string
+	var idx, j int
 	fmt.Println()
 	fmt.Println("========================================")
 	fmt.Println("         🔍 CARI RESEP")
 	fmt.Println("========================================")
+
+	tampilDaftarJudul()
+	if daftarResep.JumlahResep == 0 {
+		return // Jika kosong, langsung kembali ke menu utama
+	}
+	judul = inputString("Masukkan judul resep yang ingin dicari: ")
+
+	idx = cariResepBinary(judul)
+	if idx == -1 {
+		fmt.Println("⚠️ Resep tidak ditemukan.")
+	} else {
+		fmt.Println("\n===== RESEP DITEMUKAN =====")
+		fmt.Println("Judul       :", daftarResep.Resep[idx].Judul)
+		fmt.Println("Kategori    :", daftarResep.Resep[idx].Kategori)
+		fmt.Println("Bahan Utama :", daftarResep.Resep[idx].BahanUtama)
+		fmt.Println("Daftar Bahan:")
+		for j = 0; j < daftarResep.Resep[idx].JumlahBahan; j++ {
+			fmt.Printf("   %d. %s\n", j+1, daftarResep.Resep[idx].Bahan[j])
+		}
+		fmt.Println("👨🍳  Langkah :\n", daftarResep.Resep[idx].Langkah)
+		fmt.Println("⏱️  Durasi  :", daftarResep.Resep[idx].Durasi, "menit")
+		// Menambah jumlah klik pencarian untuk fitur Statistik
+		daftarResep.Resep[idx].JumlahDicari++
+	}
+}
+
+//MENU SEARCHING START KALAU MAU MAKE BIN DAN SEQ
+/*
+func cariResepMenu() {
+	var pilihan int
+    // ... (print judul dll) ...
+
 	fmt.Println("1. Sequential Search")
 	fmt.Println("2. Binary Search")
 
@@ -245,13 +410,10 @@ func cariResepMenu() {
 	reader.ReadString('\n')
 
 	switch pilihan {
-
 	case 1:
 		cariResepSequentialMenu()
-
 	case 2:
 		cariResepBinaryMenu()
-
 	default:
 		fmt.Println("Pilihan tidak valid")
 	}
@@ -321,7 +483,7 @@ func cariResepBinaryMenu() {
 
 		daftarResep.Resep[idx].JumlahDicari++
 	}
-}
+}*/
 
 // JANGAN DI APA APAIN, (GUAJUGA GATAU KENAPA INI BISA WORK HEHEHHEHEHE "if it works don't touch it") MALAS BACA DOKUMENTASI, JADI GUA BUAT SENDIRI, KALO ADA YANG GAK JELAS BISA TANYA AJA
 func cariResepSequential(judul string) int {
@@ -458,6 +620,7 @@ func insertionSortDurasi(ascending bool) {
 		daftarResep.Resep[j+1] = temp
 	}
 }
+
 // MENU SORTING END
 
 // MENU STATISTIK START
@@ -521,6 +684,7 @@ func statistik() {
 		daftarResep.Resep[idxPopuler].JumlahDicari,
 	)
 }
+
 // MENU STATISTIK END
 
 // BUAT LUCU LUCUAN AJA PAN WALAUPUN BERANTAKAN HEHEHHEHEHE
