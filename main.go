@@ -121,6 +121,8 @@ func main() {
 			hapusResep()
 		case 6:
 			urutkanResep()
+		case 7:
+			statistik()
 		case 0:
 			fmt.Println("Terima kasih telah menggunakan aplikasi resep masakan!")
 			return
@@ -475,8 +477,10 @@ func urutkanResep() {
 	var pilihan int
 
 	fmt.Println("\n===== URUTKAN RESEP =====")
-	fmt.Println("1. Judul Ascending ")
-	fmt.Println("2. Judul Descending ")
+	fmt.Println("1. Judul Ascending (Selection Sort)")
+	fmt.Println("2. Judul Descending (Selection Sort)")
+	fmt.Println("3. Durasi Ascending (Insertion Sort)")
+	fmt.Println("4. Durasi Descending (Insertion Sort)")
 
 	fmt.Print("Pilih: ")
 	fmt.Scan(&pilihan)
@@ -492,6 +496,14 @@ func urutkanResep() {
 	case 2:
 		selectionSortJudul(false)
 		fmt.Println("Resep berhasil diurutkan berdasarkan judul Z-A")
+
+	case 3:
+		insertionSortDurasi(true)
+		fmt.Println("Resep berhasil diurutkan berdasarkan durasi terkecil")
+
+	case 4:
+		insertionSortDurasi(false)
+		fmt.Println("Resep berhasil diurutkan berdasarkan durasi terbesar")
 
 	default:
 		fmt.Println("Pilihan tidak valid")
@@ -594,7 +606,7 @@ func statistik() {
 
 	rataRata = float64(totalDurasi) / float64(daftarResep.JumlahResep)
 
-	fmt.Println("\n----- STATISTIK -----")
+	fmt.Println("\n===== STATISTIK =====")
 	fmt.Println("Jumlah Resep        :", daftarResep.JumlahResep)
 	fmt.Printf("Rata-rata Durasi    : %.2f menit\n", rataRata)
 
