@@ -153,9 +153,10 @@ func menu() int {
 	fmt.Println("5. Hapus Resep")
 	fmt.Println("6. Urutkan Resep")
 	fmt.Println("0. Keluar")
+	fmt.Println("7. Statistik")
 	fmt.Print("Pilihan menu: ")
 	fmt.Scan(&pilihan,)
-	if pilihan < 0 || pilihan > 6 {
+	if pilihan < 0 || pilihan > 7 {
 		fmt.Println("Pilihan tidak valid, silakan pilih menu yang tersedia.")
 		return menu()
 	}
