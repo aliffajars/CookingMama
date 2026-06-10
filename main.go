@@ -572,13 +572,16 @@ func insertionSortDurasi(ascending bool) {
 // MENU STATISTIK START
 
 func statistik() {
-	var i, totalDurasi int
-	var idxTercepat, idxTerlama, idxPopuler int
-	var rataRata float64
+	var i int
+	var idxPopuler int
+	var kategori [MAX_RESEP]string
+	var jumlahKategori [MAX_RESEP]int
+	var jumlahDataKategori int
+	var ditemukan bool
+	var j int
 
 	fmt.Println()
 	fmt.Println("===== STATISTIK RESEP =====")
-
 
 	if daftarResep.JumlahResep == 0 {
 		fmt.Println("Belum ada resep yang tersimpan.")
@@ -587,16 +590,20 @@ func statistik() {
 
 	for i = 0; i < daftarResep.JumlahResep; i++ {
 
-		totalDurasi += daftarResep.Resep[i].Durasi
+		ditemukan = false
 
-		if daftarResep.Resep[i].Durasi <
-			daftarResep.Resep[idxTercepat].Durasi {
-			idxTercepat = i
+		for j = 0; j < jumlahDataKategori; j++ {
+			if kategori[j] == daftarResep.Resep[i].Kategori {
+				jumlahKategori[j]++
+				ditemukan = true
+				break
+			}
 		}
 
-		if daftarResep.Resep[i].Durasi >
-			daftarResep.Resep[idxTerlama].Durasi {
-			idxTerlama = i
+		if !ditemukan {
+			kategori[jumlahDataKategori] = daftarResep.Resep[i].Kategori
+			jumlahKategori[jumlahDataKategori] = 1
+			jumlahDataKategori++
 		}
 
 		if daftarResep.Resep[i].JumlahDicari >
@@ -605,29 +612,28 @@ func statistik() {
 		}
 	}
 
-	rataRata = float64(totalDurasi) / float64(daftarResep.JumlahResep)
+	fmt.Println()
+	fmt.Println("Jumlah Resep per Kategori:")
 
-	fmt.Println("\n===== STATISTIK =====")
-	fmt.Println("Jumlah Resep        :", daftarResep.JumlahResep)
-	fmt.Printf("Rata-rata Durasi    : %.2f menit\n", rataRata)
+	for i = 0; i < jumlahDataKategori; i++ {
+		fmt.Printf(
+			"- %s : %d resep\n",
+			kategori[i],
+			jumlahKategori[i],
+		)
+	}
 
-	fmt.Printf(
-		"Resep Tercepat      : %s (%d menit)\n",
-		daftarResep.Resep[idxTercepat].Judul,
-		daftarResep.Resep[idxTercepat].Durasi,
-	)
+	fmt.Println()
 
-	fmt.Printf(
-		"Resep Terlama       : %s (%d menit)\n",
-		daftarResep.Resep[idxTerlama].Judul,
-		daftarResep.Resep[idxTerlama].Durasi,
-	)
-
-	fmt.Printf(
-		"Resep Paling Dicari : %s (%d kali)\n",
-		daftarResep.Resep[idxPopuler].Judul,
-		daftarResep.Resep[idxPopuler].JumlahDicari,
-	)
+	if daftarResep.Resep[idxPopuler].JumlahDicari > 0 {
+		fmt.Printf(
+			"Resep Paling Dicari : %s (%d kali)\n",
+			daftarResep.Resep[idxPopuler].Judul,
+			daftarResep.Resep[idxPopuler].JumlahDicari,
+		)
+	} else {
+		fmt.Println("Resep Paling Dicari : Belum ada pencarian")
+	}
 }
 
 // MENU STATISTIK END
