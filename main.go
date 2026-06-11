@@ -393,7 +393,7 @@ func hapusResep() {
 // END CRUD RESEP
 
 // MENU SEARCHING START TANPA BIN DAN SEQ
-func cariResep() {
+/*func cariResep() {
 	var judul string
 	var idx, j int
 
@@ -429,6 +429,88 @@ func cariResep() {
 
 	fmt.Printf("\nTotal Durasi: %d menit\n",
 		daftarResep.Resep[idx].Durasi)
+}*/
+
+func cariResep() {
+	var pilihan int
+	var judul, bahan string
+	var idx int
+	var j int
+
+	fmt.Println()
+	tampilDaftarJudul()
+	fmt.Println("===== CARI RESEP =====")
+	fmt.Println("1. Cari Berdasarkan Judul (Binary Search)")
+	fmt.Println("2. Cari Berdasarkan Bahan Utama (Sequential Search)")
+	fmt.Print("Pilihan Menu: ")
+	fmt.Scan(&pilihan)
+	reader.ReadString('\n')
+
+	
+	switch pilihan {
+
+	case 1:
+		// Binary Search → wajib sort A-Z dulu di belakang layar
+		tampilDaftarJudul()
+		selectionSortJudul(true) // otomatis sort, user tidak perlu tahu
+		judul = inputString("\nMasukkan judul resep: ")
+		idx = cariResepBinary(judul)
+		if idx == -1 {
+			fmt.Println("Resep tidak ditemukan.")
+		} else {	
+			daftarResep.Resep[idx].JumlahDicari++
+			fmt.Println("\n===== DETAIL RESEP =====")
+			fmt.Println("Judul       :", daftarResep.Resep[idx].Judul)
+			fmt.Println("Kategori    :", daftarResep.Resep[idx].Kategori)
+			fmt.Println("Bahan Utama :", daftarResep.Resep[idx].BahanUtama)
+			fmt.Println("\nDaftar Bahan:")
+			for j = 0; j < daftarResep.Resep[idx].JumlahBahan; j++ {
+				fmt.Printf("- %s\n", daftarResep.Resep[idx].Bahan[j])
+			}
+			fmt.Println("\nLangkah Memasak:")
+			fmt.Println(daftarResep.Resep[idx].Langkah)
+			fmt.Printf("\nTotal Durasi: %d menit\n", daftarResep.Resep[idx].Durasi)
+		}
+
+	case 2:
+		// Sequential Search → cari semua resep yang punya bahan utama sama
+		bahan = inputString("\nMasukkan bahan utama: ")
+		cariResepBahanUtama(bahan)
+
+	default:
+		fmt.Println("Pilihan tidak valid.")
+	}
+}
+
+func cariResepBahanUtama(bahan string) {
+    var i, j int
+    var ketemu bool = false
+
+    for i = 0; i < daftarResep.JumlahResep; i++ {
+        if strings.EqualFold(daftarResep.Resep[i].BahanUtama, bahan) {
+            
+            if !ketemu {
+                fmt.Println("\n===== RESEP DITEMUKAN =====")
+                ketemu = true
+            }
+
+            fmt.Printf("\n%d. %s\n", i+1, daftarResep.Resep[i].Judul)
+            fmt.Println("   Kategori    :", daftarResep.Resep[i].Kategori)
+            fmt.Println("   Bahan Utama :", daftarResep.Resep[i].BahanUtama)
+            fmt.Println("   Daftar Bahan:")
+            for j = 0; j < daftarResep.Resep[i].JumlahBahan; j++ {
+                fmt.Printf("   - %s\n", daftarResep.Resep[i].Bahan[j])
+            }
+            fmt.Println("   Langkah :", daftarResep.Resep[i].Langkah)
+            fmt.Println("   Durasi  :", daftarResep.Resep[i].Durasi, "menit")
+
+            daftarResep.Resep[i].JumlahDicari++
+        }
+    }
+
+    if !ketemu {
+        fmt.Println("Resep dengan bahan utama tersebut tidak ditemukan.")
+    }
 }
 
 // JANGAN DI APA APAIN, (GUAJUGA GATAU KENAPA INI BISA WORK HEHEHHEHEHE "if it works don't touch it") MALAS BACA DOKUMENTASI, JADI GUA BUAT SENDIRI, KALO ADA YANG GAK JELAS BISA TANYA AJA

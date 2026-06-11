@@ -4,3 +4,7 @@ update
 3. pada func editResep gw nambahin biar bisa edit si resep dan bahan, serta kalau gak mau di ubah bisa "." atau "space"
 4. pada func hapusResep kalau input 0 langsung return ke menu utama dan ada resep yang kesorting
 5. mengblok func cariResepMenua tau komentar func seq dan bin 
+
+update :
+1. menyesuaikan bagian cariResep
+2. membuat func baru untuk cariResepBahanUtama untuk cari resep bedasarkan bahan utama
