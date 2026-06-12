@@ -411,7 +411,7 @@ func cariResep() {
 	switch pilihan {
 
 	case 1:
-		// Binary Search → wajib sort A-Z dulu di belakang layar
+		// Binary Search (sorting dlu dari A-z)
 		selectionSortJudul(true) // otomatis sort, user tidak perlu tahu
 		tampilDaftarJudul()
 		judul = inputString("\nMasukkan judul resep: ")
@@ -434,7 +434,7 @@ func cariResep() {
 		}
 
 	case 2:
-		// Sequential Search → cari semua resep yang punya bahan utama sama
+		// Sequential Search (cari semua resep yang punya bahan utama sama)
 		bahan = inputString("\nMasukkan bahan utama: ")
 		cariResepBahanUtama(bahan)
 
