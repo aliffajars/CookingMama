@@ -392,45 +392,6 @@ func hapusResep() {
 
 // END CRUD RESEP
 
-// MENU SEARCHING START TANPA BIN DAN SEQ
-/*func cariResep() {
-	var judul string
-	var idx, j int
-
-	fmt.Println()
-	fmt.Println("===== CARI RESEP =====")
-
-	tampilDaftarJudul()
-
-	judul = inputString("\nMasukkan judul resep: ")
-
-	idx = cariResepSequential(judul)
-
-	if idx == -1 {
-		fmt.Println("Resep tidak ditemukan.")
-		return
-	}
-
-	daftarResep.Resep[idx].JumlahDicari++
-
-	fmt.Println()
-	fmt.Println("===== DETAIL RESEP =====")
-	fmt.Println("Judul       :", daftarResep.Resep[idx].Judul)
-	fmt.Println("Kategori    :", daftarResep.Resep[idx].Kategori)
-	fmt.Println("Bahan Utama :", daftarResep.Resep[idx].BahanUtama)
-
-	fmt.Println("\nDaftar Bahan:")
-	for j = 0; j < daftarResep.Resep[idx].JumlahBahan; j++ {
-		fmt.Printf("- %s\n", daftarResep.Resep[idx].Bahan[j])
-	}
-
-	fmt.Println("\nLangkah Memasak:")
-	fmt.Println(daftarResep.Resep[idx].Langkah)
-
-	fmt.Printf("\nTotal Durasi: %d menit\n",
-		daftarResep.Resep[idx].Durasi)
-}*/
-
 func cariResep() {
 	var pilihan int
 	var judul, bahan string
