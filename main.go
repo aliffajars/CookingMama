@@ -152,8 +152,8 @@ func menu() int {
 	fmt.Println("4. Edit Resep")
 	fmt.Println("5. Hapus Resep")
 	fmt.Println("6. Urutkan Resep")
-	fmt.Println("0. Keluar")
 	fmt.Println("7. Statistik")
+	fmt.Println("0. Keluar")
 	fmt.Print("Pilihan menu: ")
 	fmt.Scan(&pilihan,)
 	if pilihan < 0 || pilihan > 7 {
@@ -451,8 +451,8 @@ func cariResep() {
 
 	case 1:
 		// Binary Search → wajib sort A-Z dulu di belakang layar
-		tampilDaftarJudul()
 		selectionSortJudul(true) // otomatis sort, user tidak perlu tahu
+		tampilDaftarJudul()
 		judul = inputString("\nMasukkan judul resep: ")
 		idx = cariResepBinary(judul)
 		if idx == -1 {
