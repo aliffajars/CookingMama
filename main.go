@@ -475,7 +475,7 @@ func cariResepBahanUtama(bahan string) {
 }
 
 // JANGAN DI APA APAIN, (GUAJUGA GATAU KENAPA INI BISA WORK HEHEHHEHEHE "if it works don't touch it") MALAS BACA DOKUMENTASI, JADI GUA BUAT SENDIRI, KALO ADA YANG GAK JELAS BISA TANYA AJA
-func cariResepSequential(judul string) int {
+/*func cariResepSequential(judul string) int {
 	var i int
 
 	for i = 0; i < daftarResep.JumlahResep; i++ {
@@ -484,6 +484,20 @@ func cariResepSequential(judul string) int {
 		}
 	}
 	return -1
+}*/
+
+func cariResepSequential(judul string) int {
+	var i, foundIdx int
+	foundIdx = -1
+	i = 0
+
+	for i < daftarResep.JumlahResep && foundIdx == -1 {
+		if strings.EqualFold(daftarResep.Resep[i].Judul, judul) {
+			foundIdx = i
+		}
+		i++
+	}
+	return foundIdx 
 }
 
 func cariResepBinary(judul string) int {
@@ -500,9 +514,7 @@ func cariResepBinary(judul string) int {
 			return tengah
 		}
 
-		if strings.ToLower(judul) <
-			strings.ToLower(daftarResep.Resep[tengah].Judul) {
-
+		if strings.ToLower(judul) < strings.ToLower(daftarResep.Resep[tengah].Judul) {
 			kanan = tengah - 1
 
 		} else {
@@ -634,13 +646,14 @@ func statistik() {
 	for i = 0; i < daftarResep.JumlahResep; i++ {
 
 		ditemukan = false
+		j = 0 
 
-		for j = 0; j < jumlahDataKategori; j++ {
+		for j < jumlahDataKategori && !ditemukan {
 			if kategori[j] == daftarResep.Resep[i].Kategori {
 				jumlahKategori[j]++
 				ditemukan = true
-				break
 			}
+			j++
 		}
 
 		if !ditemukan {
